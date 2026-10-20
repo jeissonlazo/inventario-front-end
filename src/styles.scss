@@ -1,1 +1,302 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+/* Tema Material 3 (claro) aplicado a toda la aplicación. */
+html {
+  color-scheme: light;
+
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$violet-palette,
+      ),
+      typography: "Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      density: 0,
+    )
+  );
+}
+
+/* Tema oscuro: se activa con la clase .dark en <html> desde ThemeService. */
+html.dark {
+  color-scheme: dark;
+
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: mat.$azure-palette,
+        tertiary: mat.$violet-palette,
+      ),
+      typography: "Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      density: 0,
+    )
+  );
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--mat-sys-surface-container-low, #f6f7fb);
+  color: var(--mat-sys-on-surface, #1a1c1e);
+  font-family: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--mat-sys-primary, #005cbb);
+}
+
+/* ---------------------------------------------------------------------------
+   Utilidades compartidas por las vistas
+   --------------------------------------------------------------------------- */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px clamp(16px, 4vw, 32px) 40px;
+  max-width: 1320px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+.page__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.page__title {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.2vw, 1.85rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.page__subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface-variant, #44474e);
+}
+
+.page__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.page__actions > * {
+  flex: 0 0 auto;
+}
+
+.page__actions .mat-mdc-button-base {
+  white-space: nowrap;
+}
+
+.surface {
+  background: var(--mat-sys-surface, #fff);
+  border: 1px solid var(--mat-sys-outline-variant, #e1e2e8);
+  border-radius: 18px;
+}
+
+.surface--padded {
+  padding: 20px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.muted {
+  color: var(--mat-sys-on-surface-variant, #44474e);
+}
+
+.mono {
+  font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.search-field {
+  width: min(300px, 100%);
+}
+
+.search-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+/* Etiquetas de estado (chips) sin depender de MatChips. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.tag--ok {
+  background: color-mix(in srgb, #1e8e5a 14%, transparent);
+  color: #146c43;
+}
+
+.tag--warn {
+  background: color-mix(in srgb, #b26a00 16%, transparent);
+  color: #8a5100;
+}
+
+.tag--danger {
+  background: color-mix(in srgb, #ba1a1a 14%, transparent);
+  color: #a11212;
+}
+
+.tag--neutral {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  color: var(--mat-sys-on-surface-variant, #44474e);
+}
+
+html.dark .tag--ok {
+  color: #7fdaa8;
+}
+
+html.dark .tag--warn {
+  color: #ffc46b;
+}
+
+html.dark .tag--danger {
+  color: #ffb4ab;
+}
+
+/* Tablas: contenedor con desplazamiento horizontal en móvil. */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 1100px) {
+  .page__header {
+    flex-wrap: wrap;
+  }
+
+  .page__actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+table.mat-mdc-table {
+  width: 100%;
+  min-width: 640px;
+  background: transparent;
+}
+
+.mat-mdc-header-row {
+  background: var(--mat-sys-surface-container, #eef0f7);
+}
+
+.mat-mdc-header-cell {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mat-sys-on-surface-variant, #44474e);
+}
+
+.mat-mdc-cell,
+.mat-mdc-header-cell {
+  padding-inline: 16px !important;
+}
+
+.cell--numeric {
+  text-align: right;
+}
+
+.mat-mdc-header-cell.cell--numeric .mat-sort-header-container {
+  justify-content: flex-end;
+}
+
+.actions-cell {
+  width: 112px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Avisos (MatSnackBar) con color según el resultado.
+   Se encadena la clase del contenedor para superar la especificidad del tema de Material. */
+.mat-mdc-snack-bar-container.snackbar--success .mdc-snackbar__surface {
+  background-color: #146c43;
+}
+
+.mat-mdc-snack-bar-container.snackbar--error .mdc-snackbar__surface {
+  background-color: #8c1d18;
+}
+
+.mat-mdc-snack-bar-container.snackbar--success .mat-mdc-snack-bar-label,
+.mat-mdc-snack-bar-container.snackbar--error .mat-mdc-snack-bar-label,
+.mat-mdc-snack-bar-container.snackbar--success button,
+.mat-mdc-snack-bar-container.snackbar--error button {
+  color: #ffffff;
+}
+
+/* Animación de entrada suave para las vistas. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: rise 0.28s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    animation: none;
+  }
+}

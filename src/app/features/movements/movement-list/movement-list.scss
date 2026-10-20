@@ -1,0 +1,75 @@
+.limit-field {
+  width: 140px;
+}
+
+.table-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.table-head h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.movement-table {
+  border-top: 1px solid var(--mat-sys-outline-variant, #e1e2e8);
+}
+
+.date {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.86rem;
+}
+
+.product-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.product-cell strong {
+  font-weight: 600;
+}
+
+.product-cell span {
+  font-size: 0.75rem;
+}
+
+.delta {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #b91c1c;
+}
+
+.delta--in {
+  color: #15803d;
+}
+
+.note {
+  display: block;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.86rem;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.87rem;
+}
+
+.banner--error {
+  background: color-mix(in srgb, var(--mat-sys-error, #ba1a1a) 10%, transparent);
+  color: var(--mat-sys-error, #ba1a1a);
+}

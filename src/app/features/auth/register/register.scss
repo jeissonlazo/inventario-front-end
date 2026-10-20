@@ -1,0 +1,64 @@
+.head h2 {
+  margin: 0 0 6px;
+  font-size: 1.5rem;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+}
+
+.head p {
+  margin: 0 0 22px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--mat-sys-on-surface-variant, #44474e);
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  background: color-mix(in srgb, var(--mat-sys-error, #ba1a1a) 10%, transparent);
+  color: var(--mat-sys-error, #ba1a1a);
+}
+
+.alert mat-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form mat-form-field {
+  width: 100%;
+}
+
+.submit {
+  margin-top: 10px;
+  height: 48px;
+  font-weight: 600;
+}
+
+.foot {
+  margin: 20px 0 0;
+  font-size: 0.87rem;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant, #44474e);
+}
+
+.foot a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.foot a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,50 @@
+.content {
+  padding-top: 8px;
+  min-width: min(500px, 82vw);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 16px;
+}
+
+.grid .span-2 {
+  grid-column: span 2;
+}
+
+.grid mat-form-field {
+  width: 100%;
+}
+
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.banner--error {
+  background: color-mix(in srgb, var(--mat-sys-error, #ba1a1a) 10%, transparent);
+  color: var(--mat-sys-error, #ba1a1a);
+}
+
+.banner mat-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid .span-2 {
+    grid-column: span 1;
+  }
+}

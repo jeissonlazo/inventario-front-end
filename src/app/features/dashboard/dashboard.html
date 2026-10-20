@@ -1,0 +1,137 @@
+<div class="page animate-rise">
+  <header class="page__header">
+    <div class="page__heading">
+      <h1 class="page__title">Panel general</h1>
+      <p class="page__subtitle">Estado actual de la bodega y los últimos movimientos registrados.</p>
+    </div>
+    <div class="page__actions">
+      @if (updatedAt(); as updated) {
+        <span class="muted updated">Actualizado {{ updated | date: 'shortTime' }}</span>
+      }
+      <button matButton="outlined" type="button" (click)="load()" [disabled]="loading()">
+        <mat-icon svgIcon="refresh" />
+        Actualizar
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Cargando panel" />
+  }
+
+  @if (error()) {
+    <div class="banner banner--error" role="alert">
+      <mat-icon svgIcon="warning" />
+      <span>{{ error() }}</span>
+      <button matButton type="button" (click)="load()">Reintentar</button>
+    </div>
+  }
+
+  <section class="kpis" aria-label="Indicadores">
+    @for (kpi of kpis(); track kpi.label) {
+      <article class="kpi surface" [class]="'kpi--' + kpi.tone">
+        <span class="kpi__icon"><mat-icon [svgIcon]="kpi.icon" /></span>
+        <div class="kpi__text">
+          <span class="kpi__label">{{ kpi.label }}</span>
+          <strong class="kpi__value">{{ kpi.value }}</strong>
+          <span class="kpi__caption">{{ kpi.caption }}</span>
+        </div>
+      </article>
+    }
+
+    @if (loading() && kpis().length === 0) {
+      @for (placeholder of [1, 2, 3, 4]; track placeholder) {
+        <div class="kpi kpi--skeleton surface"></div>
+      }
+    }
+  </section>
+
+  <div class="panels">
+    <section class="surface panel">
+      <header class="panel__head">
+        <div>
+          <h2>Stock bajo</h2>
+          <p class="muted">Productos en o por debajo del mínimo configurado.</p>
+        </div>
+        @if (data()?.lowStockCount) {
+          <span class="tag tag--warn">{{ data()!.lowStockCount }} por reponer</span>
+        }
+      </header>
+
+      @if (data()?.lowStockProducts?.length) {
+        <ul class="low-list">
+          @for (item of data()!.lowStockProducts; track item.productId) {
+            <li class="low-item">
+              <div class="low-item__main">
+                <strong>{{ item.name }}</strong>
+                <span class="mono muted">{{ item.sku }}</span>
+              </div>
+              <div class="low-item__meter">
+                <div class="meter">
+                  <span
+                    class="meter__fill"
+                    [style.width.%]="item.minimumStock ? (item.quantity / item.minimumStock) * 100 : 0"
+                  ></span>
+                </div>
+                <span class="muted">
+                  {{ item.quantity }} / {{ item.minimumStock }} ·
+                  faltan {{ missingUnits(item.quantity, item.minimumStock) }}
+                </span>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else if (!loading()) {
+        <app-empty-state
+          icon="check"
+          title="Todo el inventario está por encima del mínimo"
+          message="Cuando un producto llegue a su stock mínimo aparecerá aquí."
+        />
+      }
+
+      <footer class="panel__foot">
+        <a matButton="text" routerLink="/inventario">
+          Ver inventario completo
+          <mat-icon svgIcon="chevronRight" />
+        </a>
+      </footer>
+    </section>
+
+    <section class="surface panel">
+      <header class="panel__head">
+        <div>
+          <h2>Últimos movimientos</h2>
+          <p class="muted">Entradas y salidas más recientes.</p>
+        </div>
+        <a matButton="text" routerLink="/movimientos">Ver todos</a>
+      </header>
+
+      @if (recentMovements().length) {
+        <ul class="movelist">
+          @for (movement of recentMovements(); track movement.id) {
+            <li class="move">
+              <span class="move__icon" [class.move__icon--in]="movement.type === 'Entry'">
+                <mat-icon [svgIcon]="movement.type === 'Entry' ? 'arrowDown' : 'arrowUp'" />
+              </span>
+              <div class="move__body">
+                <strong>{{ movement.productName }}</strong>
+                <span class="muted">
+                  {{ labels[movement.type] }} · {{ movement.createdAt | date: 'd MMM, HH:mm' }}
+                </span>
+              </div>
+              <span class="move__qty" [class.move__qty--in]="movement.type === 'Entry'">
+                {{ movement.type === 'Entry' ? '+' : '−' }}{{ movement.quantity }}
+              </span>
+            </li>
+          }
+        </ul>
+      } @else if (!loading()) {
+        <app-empty-state
+          icon="swap"
+          title="Todavía no hay movimientos"
+          message="Registra una entrada para empezar a calcular existencias."
+        />
+      }
+    </section>
+  </div>
+</div>

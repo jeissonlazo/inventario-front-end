@@ -1,0 +1,97 @@
+<mat-sidenav-container class="shell" autosize>
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    [mode]="isHandset() ? 'over' : 'side'"
+    [opened]="!isHandset()"
+    [fixedInViewport]="isHandset()"
+  >
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path
+            d="M4 8.2 12 4l8 4.2v7.6L12 20l-8-4.2V8.2Z"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linejoin="round"
+          />
+          <path d="M4 8.2 12 12.4l8-4.2M12 12.4V20" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+        </svg>
+      </span>
+      <span class="brand__text">
+        <strong>BodegaFlow</strong>
+        <small>Gestión de inventario</small>
+      </span>
+    </div>
+
+    <mat-divider />
+
+    <nav class="nav" aria-label="Secciones principales">
+      @for (item of navItems; track item.route) {
+        <a
+          class="nav__item"
+          [routerLink]="item.route"
+          routerLinkActive="nav__item--active"
+          (click)="closeOnHandset(drawer)"
+        >
+          <mat-icon [svgIcon]="item.icon" />
+          <span class="nav__label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidenav__footer">
+      <span class="sidenav__env">API</span>
+      <span class="mono">localhost:5070</span>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="shell__body">
+    <mat-toolbar class="topbar">
+      @if (isHandset()) {
+        <button matIconButton (click)="drawer.open()" aria-label="Abrir menú de navegación">
+          <mat-icon svgIcon="menu" />
+        </button>
+      }
+
+      <div class="topbar__heading">
+        <span class="topbar__section">{{ activeItem().label }}</span>
+        <span class="topbar__hint">{{ activeItem().hint }}</span>
+      </div>
+
+      <span class="spacer"></span>
+
+      <button
+        matIconButton
+        type="button"
+        (click)="theme.toggle()"
+        [matTooltip]="theme.isDark() ? 'Usar tema claro' : 'Usar tema oscuro'"
+        [attr.aria-label]="theme.isDark() ? 'Usar tema claro' : 'Usar tema oscuro'"
+      >
+        <mat-icon [svgIcon]="theme.isDark() ? 'lightMode' : 'darkMode'" />
+      </button>
+
+      <button class="account" type="button" [matMenuTriggerFor]="accountMenu" aria-label="Menú de la cuenta">
+        <span class="account__avatar">{{ initials() }}</span>
+        <span class="account__email">{{ auth.user()?.email }}</span>
+        <mat-icon svgIcon="chevronRight" class="account__chevron" />
+      </button>
+
+      <mat-menu #accountMenu="matMenu" xPosition="before" class="account-menu">
+        <div class="account-menu__head">
+          <span class="muted">Sesión iniciada como</span>
+          <strong>{{ auth.user()?.email }}</strong>
+        </div>
+        <mat-divider />
+        <button mat-menu-item type="button" (click)="logout()">
+          <mat-icon svgIcon="logout" />
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <main class="shell__main">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
