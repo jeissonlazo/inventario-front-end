@@ -39,7 +39,8 @@ npm install          # o: bun install
 npm start            # ng serve, con proxy /api -> http://localhost:5070
 ```
 
-La aplicación queda en **http://localhost:4200**.
+La aplicación queda en **http://localhost:4200**. Desde la carpeta raíz `bodegapp` puedes arrancar
+los dos proyectos a la vez con `.\dev.ps1`.
 
 Credenciales de demostración ya sembradas en la base local:
 
@@ -99,33 +100,30 @@ Notas relevantes descubiertas al integrar:
 - Las entradas y salidas se validan en PostgreSQL (transacción + `FOR UPDATE`), por lo que una salida
   mayor que el stock responde `400` con el mensaje «Existencias insuficientes para realizar la salida.».
 
-## Backend con el que se probó
+## Backend
 
-La API del repositorio `gestion_inventario` necesitó cuatro ajustes para funcionar en esta máquina
-(ya aplicados en ese proyecto):
-
-1. `appsettings.json` apuntaba a una base **Neon** inalcanzable; se cambió a la base local
-   `Host=localhost;Port=5432;Database=gestion_inventario;Username=postgres;Password=postgres`.
-2. El logger de **Event Log** de Windows fallaba sin privilegios y convertía cualquier petición en
-   `500`; `Program.cs` ahora usa solo consola (`builder.Logging.ClearProviders(); AddConsole()`).
-3. `InventoryService` llamaba a las funciones SQL con `SELECT *`, pero los DTO esperan nombres en
-   PascalCase: se añadieron alias (`product_id AS "ProductId"`, …) y se admiten filas de error con `id` nulo.
-4. Se agregó `http://localhost:4200` a `Cors:AllowedOrigins`.
-
-Base de datos local usada (clúster nuevo, sin tocar el servicio del puerto 5433):
+La API vive en el repositorio hermano [`gestion_inventario`](../gestion_inventario) y, en esta
+máquina, en `D:\projectos\bodegapp\gestion_inventario`. Se arranca con:
 
 ```powershell
-# datos en D:\projectos\pgdata-gestion-inventario, esquema en database/init.sql
-& 'C:\Program Files\PostgreSQL\16\bin\pg_ctl.exe' -D 'D:\projectos\pgdata-gestion-inventario' `
-    -o '-p 5432 -c listen_addresses=localhost' `
-    -l 'D:\projectos\pgdata-gestion-inventario.log' start
-
-# API
-cd D:\projectos\gestion_inventario
-dotnet run --urls http://localhost:5070
+cd ..\gestion_inventario
+dotnet run --launch-profile http      # http://localhost:5070
 ```
 
-Para detener la base: `pg_ctl -D D:\projectos\pgdata-gestion-inventario stop`.
+Usa la base PostgreSQL de **Neon** configurada en `ConnectionStrings:Inventory`; el esquema y el
+catálogo de demostración se cargan con `database/init.sql` y `database/seed-demo.sql`. Para trabajar
+contra el PostgreSQL local del equipo basta con exportar `ConnectionStrings__Inventory` antes de
+arrancar (la cadena de referencia está en `ConnectionStrings:Local`).
+
+Detalles del API que condicionan esta interfaz:
+
+1. `Program.cs` registra solo el logger de consola: el proveedor de Event Log de Windows falla sin
+   privilegios y convertía cualquier petición en `500`.
+2. `InventoryService` llama a las funciones SQL con alias en PascalCase (`product_id AS "ProductId"`, …)
+   y admite filas de error con `id` nulo.
+3. `http://localhost:4200` y `http://127.0.0.1:4200` están en `Cors:AllowedOrigins`, aunque en
+   desarrollo todo pasa por el proxy y no hay CORS.
+4. La primera petición puede tardar unos segundos si Neon reactiva la instancia suspendida.
 
 ## Capturas
 
